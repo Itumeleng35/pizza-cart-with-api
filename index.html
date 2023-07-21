@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="pizza.js"></script>
+</head>
+
+
+
+
+
+<body x-data="pizzaCart" style="background-color: #ccd5ae;">
+
+    <div class="mask" style="background-image: url('public/pizza_background_6821416.jpg');">
+        <div class="container py-3" style="background-color: #ff9b85;">
+            <div class="d-flex justify-content-between">
+                <div>
+                    Username: <input type="text" x-model="username">
+                    <button class="btn btn-primary" x-on:click="login" x-show="!cartID">Login</button>
+                    <button class="btn btn-danger" x-on:click="logout" x-show="username && cartID">Logout</button>
+                </div>
+                <div x-show="cartID">
+                    Cart code: <span x-text="cartID"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container d-flex justify-content-center align-items-center h-100">
+            <div>
+                <h1 class="mb-3">Pizza Cart API</h1>
+                <h4 class="mb-3">The perfect home for pizzas</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-3">
+        <h1 x-text="title"></h1>
+
+        <div class="cart" x-cloak>
+            <div x-show="cartTotal > 0">
+
+                <h2>Your Cart</h2>
+                <div class="message" x-text="message">Message here</div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Flavour</th>
+                            <th>Size</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="pizza in cartPizzas">
+                            <tr>
+                                <td x-text="pizza.flavour"></td>
+                                <td x-text="pizza.size"></td>
+                                <td x-text="pizza.price"></td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm"
+                                        x-on:click="addPizzaToCart(pizza.id)">+</button>
+                                    x<span x-text="pizza.qty"></span>
+                                    <button class="btn btn-danger btn-sm"
+                                        x-on:click="removePizzaFromCart(pizza.id)">-</button>
+                                </td>
+                                <td x-text="pizza.total.toFixed(2)"></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="total">Total</td>
+                            <td colspan="2" style="text-align: right;">R <span x-text="cartTotal"></span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="pay-now">Pay now</td>
+                            <td><input x-model="paymentAmount" type="text" class="form-control"></td>
+                            <td><button class="btn btn-success" x-on:click="payForCart()">Pay</button></td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+               <!-- Button to show/hide the historical cart -->
+<button @click="showHistoricalCart()" class="btn btn-primary" x-show="historicalCart.length > 0">View Historical Cart</button>
+
+<!-- Historical Cart Section -->
+<div x-cloak x-show="historicalCart.length > 0" x-ref="historicalCart" class="d-none">
+    <h2>Historical Cart</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Flavour</th>
+                <th>Size</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template x-for="pizza in historicalCart">
+                <tr>
+                    <td x-text="pizza.flavour"></td>
+                    <td x-text="pizza.size"></td>
+                    <td x-text="pizza.price"></td>
+                    <td>x<span x-text="pizza.qty"></span></td>
+                    <td x-text="pizza.total.toFixed(2)"></td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>
+
+                
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row pizza-boxes" x-show="username && cartID">
+            <template x-for="pizza in pizzas">
+                <div class="col-md-3">
+                    <div class="card mb-3">
+                        <div class="card-body" style="background-color: #ff9b85;">
+                            <h5 class="card-title" x-text="pizza.flavour"></h5>
+                            <p class="card-text">
+                                <strong>Price: </strong><span x-text="pizza.price"></span><br>
+                                <strong>Size: </strong><span x-text="pizza.size"></span>
+                            </p>
+                            <button class="btn btn-primary" @click="addPizzaToCart(pizza.id)">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+
+
+    </div>
+    </div>
+
+    </div>
+
+    <!-- Add Bootstrap JS scripts (jQuery and Popper.js are required) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>
